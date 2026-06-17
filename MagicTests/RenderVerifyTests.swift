@@ -37,9 +37,17 @@ final class RenderVerifyTests: XCTestCase {
             }.pngData()!
         }
 
-        // 中央红块(scale 1) + 右下蓝块(scale 0.5, 旋转 30°)
-        let red = StickerItem(imageData: solid(.systemRed, 120), posX: 0.5, posY: 0.5, scale: 1, rotation: 0, zIndex: 0)
-        let blue = StickerItem(imageData: solid(.systemBlue, 120), posX: 0.78, posY: 0.7, scale: 0.5, rotation: .pi / 6, zIndex: 1)
+        // 透明背景蓝圆（看阴影立体感）
+        func circle(_ color: UIColor) -> Data {
+            UIGraphicsImageRenderer(size: CGSize(width: 300, height: 300)).image { c in
+                color.setFill()
+                c.cgContext.fillEllipse(in: CGRect(x: 40, y: 40, width: 220, height: 220))
+            }.pngData()!
+        }
+        // 中央蓝圆带白边(scale 1) + 右下橙圆(scale 0.55, 旋转 22°)
+        let red = StickerItem(imageData: circle(.systemBlue), posX: 0.42, posY: 0.52, scale: 1, rotation: 0, zIndex: 0,
+                              edgeStyleRaw: "clean", edgeColorHex: "#FFFFFF", edgeWidth: 0.05)
+        let blue = StickerItem(imageData: circle(.systemOrange), posX: 0.66, posY: 0.64, scale: 0.55, rotation: .pi / 8, zIndex: 1)
         ctx.insert(red); ctx.insert(blue)
 
         let size = CGSize(width: 676, height: 312)

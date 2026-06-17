@@ -57,6 +57,8 @@ private struct StickerItemView: View {
             .resizable()
             .scaledToFit()
             .frame(width: baseWidth)
+            .shadow(color: .black.opacity(0.18), radius: baseWidth * 0.03,
+                    x: 0, y: baseWidth * 0.014)
             .overlay {
                 if isSelected {
                     Rectangle()

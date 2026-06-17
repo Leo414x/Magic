@@ -18,6 +18,10 @@ enum StickerCompositor {
                 cg.saveGState()
                 cg.translateBy(x: CGFloat(s.posX) * size.width, y: CGFloat(s.posY) * size.height)
                 cg.rotate(by: CGFloat(s.rotation))
+                // 立体阴影（沿贴纸 alpha 轮廓投影），参数相对贴纸实际宽 w
+                cg.setShadow(offset: CGSize(width: 0, height: w * 0.014),
+                             blur: w * 0.035,
+                             color: UIColor.black.withAlphaComponent(0.18).cgColor)
                 img.draw(in: CGRect(x: -w / 2, y: -h / 2, width: w, height: h))
                 cg.restoreGState()
             }
