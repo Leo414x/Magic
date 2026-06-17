@@ -7,6 +7,8 @@ enum StickerRendering {
 
     static func styled(for sticker: StickerItem) -> UIImage {
         guard let base = UIImage(data: sticker.imageData) else { return UIImage() }
+        // 文字 sticker 的 imageData 已含背景+文字，直接用；纸边仅对照片 sticker
+        if sticker.isText { return base }
         guard sticker.edgeStyle != .none, sticker.edgeWidth > 0, base.size.width > 0 else { return base }
 
         let key = "\(sticker.id)_\(sticker.edgeStyleRaw)_\(sticker.edgeColorHex)_\(sticker.edgeWidth)" as NSString

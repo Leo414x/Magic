@@ -8,6 +8,9 @@ DerivedData/
 # 本地渲染验证产物
 _verify/
 
+# 本地素材处理临时目录（背景已合成进 Magic/Resources）
+_assets_tmp/
+
 # Xcode / macOS
 *.xcuserstate
 xcuserdata/

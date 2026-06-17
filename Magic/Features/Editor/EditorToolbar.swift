@@ -4,6 +4,7 @@ struct EditorToolbar: View {
     let baseColor: Color
     let gridColor: Color
     var onColorTap: () -> Void
+    var onTextTap: () -> Void = {}
     var onAddTap: () -> Void = {}
     var onStarTap: () -> Void = {}
 
@@ -14,7 +15,7 @@ struct EditorToolbar: View {
                     .overlay(Circle().strokeBorder(gridColor.opacity(0.6), lineWidth: 1.5))
             } action: { onColorTap() }
 
-            item { Text("Aa").font(.system(size: 18, weight: .medium)).foregroundStyle(.primary) } action: {}
+            item { Text("Aa").font(.system(size: 18, weight: .medium)).foregroundStyle(.primary) } action: { onTextTap() }
 
             Button { onAddTap() } label: {
                 Image(systemName: "plus").font(.title2.weight(.medium)).foregroundStyle(.white)

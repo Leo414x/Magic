@@ -9,6 +9,7 @@ struct StickerEditorSheet: View {
     @State private var style: PaperEdgeStyle = .clean
     @State private var colorHex: String = "#FFFFFF"
     @State private var width: Double = 0.05
+    @State private var previewImage = UIImage()
 
     private let presetColors = ["#FFFFFF", "#000000", "#C4CF5D", "#F2C7D1", "#0F193D", "#40141F"]
 
@@ -17,9 +18,13 @@ struct StickerEditorSheet: View {
         self.onConfirm = onConfirm
     }
 
-    private var preview: UIImage {
+    /// 仅在风格/颜色/厚度变化时重算预览，避免每次 body 同步跑 CIFilter 造成闪烁。
+    private var previewKey: String { "\(style.rawValue)|\(colorHex)|\(width)" }
+
+    private func updatePreview() {
         let px = CGFloat(width) * previewBase.size.width
-        return PaperEdge.apply(to: previewBase, style: style, color: UIColor(hex: colorHex), widthPx: px)
+        previewImage = PaperEdge.apply(to: previewBase, style: style,
+                                       color: UIColor(hex: colorHex), widthPx: px)
     }
 
     var body: some View {
@@ -28,7 +33,7 @@ struct StickerEditorSheet: View {
 
             ZStack {
                 RoundedRectangle(cornerRadius: 18).fill(Color(white: 0.45))
-                Image(uiImage: preview).resizable().scaledToFit().padding(20)
+                Image(uiImage: previewImage).resizable().scaledToFit().padding(20)
             }
             .frame(height: 196)
 
@@ -89,5 +94,7 @@ struct StickerEditorSheet: View {
         .presentationDetents([.height(540)])
         .presentationDragIndicator(.hidden)
         .presentationBackground(.clear)
+        .onAppear { updatePreview() }
+        .onChange(of: previewKey) { updatePreview() }
     }
 }

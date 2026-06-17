@@ -10,6 +10,7 @@ struct EditorView: View {
     @State private var showPhotoPicker = false
     @State private var showDrawer = false
     @State private var showStickerEditor = false
+    @State private var showTextEditor = false
     @State private var editingImage: UIImage?
     @State private var pickedPhoto: PhotosPickerItem?
 
@@ -26,6 +27,7 @@ struct EditorView: View {
                     baseColor: document.theme.baseColor,
                     gridColor: document.theme.gridColor,
                     onColorTap: { showColorPicker = true },
+                    onTextTap: { showTextEditor = true },
                     onAddTap: { showPhotoPicker = true },
                     onStarTap: { showDrawer = true }
                 )
@@ -46,6 +48,12 @@ struct EditorView: View {
                 StickerEditorSheet(image: img) { style, colorHex, width in
                     commitSticker(image: img, style: style, colorHex: colorHex, width: width)
                 }
+            }
+        }
+        .sheet(isPresented: $showTextEditor) {
+            TextStickerEditorSheet(template: .goodVibes,
+                                   initialText: TextStickerTemplate.goodVibes.defaultText) { text in
+                commitTextSticker(text)
             }
         }
         .photosPicker(isPresented: $showPhotoPicker, selection: $pickedPhoto, matching: .images)
@@ -77,6 +85,20 @@ struct EditorView: View {
         context.insert(sticker)
         document.stickers.append(sticker)
         context.insert(SavedSticker(imageData: png))   // 收藏裸主体图，便于复用
+        document.updatedAt = Date()
+        try? context.save()
+        WidgetBridge.publish(document: document)
+    }
+
+    /// 文字模板 sticker 落地：渲染背景+文字 → 持久化 → 刷新 Widget。
+    private func commitTextSticker(_ text: String) {
+        let img = TextStickerRenderer.render(template: .goodVibes, text: text).downscaled(maxDim: 1000)
+        guard let png = img.pngData() else { return }
+        let sticker = StickerItem(imageData: png, zIndex: document.stickers.count,
+                                  kind: "text", text: text,
+                                  templateId: TextStickerTemplate.goodVibes.rawValue)
+        context.insert(sticker)
+        document.stickers.append(sticker)
         document.updatedAt = Date()
         try? context.save()
         WidgetBridge.publish(document: document)

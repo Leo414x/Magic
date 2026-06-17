@@ -19,14 +19,23 @@ final class StickerItem {
     var edgeColorHex: String = "#FFFFFF"
     var edgeWidth: Double = 0   // 相对 sticker 宽度的比例（0~~0.1）
 
+    // 类型：photo（照片抠图）| text（文字模板）。文字 sticker 的 imageData 已含背景+文字。
+    var kind: String = "photo"
+    var text: String?           // 文字 sticker 的可编辑文本
+    var templateId: String?     // 文字模板 id
+
     var edgeStyle: PaperEdgeStyle { PaperEdgeStyle(rawValue: edgeStyleRaw) ?? .none }
+    var isText: Bool { kind == "text" }
 
     init(imageData: Data,
          posX: Double = 0.5, posY: Double = 0.5,
          scale: Double = 1.0, rotation: Double = 0, zIndex: Int = 0,
          edgeStyleRaw: String = PaperEdgeStyle.none.rawValue,
          edgeColorHex: String = "#FFFFFF",
-         edgeWidth: Double = 0) {
+         edgeWidth: Double = 0,
+         kind: String = "photo",
+         text: String? = nil,
+         templateId: String? = nil) {
         self.id = UUID()
         self.imageData = imageData
         self.posX = posX
@@ -38,5 +47,8 @@ final class StickerItem {
         self.edgeStyleRaw = edgeStyleRaw
         self.edgeColorHex = edgeColorHex
         self.edgeWidth = edgeWidth
+        self.kind = kind
+        self.text = text
+        self.templateId = templateId
     }
 }
