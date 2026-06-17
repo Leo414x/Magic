@@ -1,0 +1,63 @@
+name: Magic
+options:
+  bundleIdPrefix: com.othric
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+targets:
+  Magic:
+    type: application
+    platform: iOS
+    sources:
+      - path: Magic
+    dependencies:
+      - target: MagicWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.othric.magic
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_ENTITLEMENTS: Magic/Magic.entitlements
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS: NO
+
+  MagicWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: MagicWidget
+      # ★共享文件：同时属于 Magic 与 MagicWidget 两个 target
+      - path: Magic/Config/AppConfig.swift
+      - path: Magic/DesignSystem/MatColorScheme.swift
+      - path: Magic/Models/MatTheme.swift
+      - path: Magic/Services/WidgetBridge.swift
+      - path: Magic/CuttingMat
+        excludes:
+          - "MatRenderCache.swift"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.othric.magic.MagicWidget
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: MagicWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: MagicWidget/MagicWidget.entitlements
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: WIDGET
+
+  MagicTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MagicTests
+    dependencies:
+      - target: Magic
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES

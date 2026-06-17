@@ -1,0 +1,14 @@
+# XcodeGen 生成物（project.yml 是真相源，换机用 xcodegen generate 重建）
+Magic.xcodeproj/
+
+# 构建产物
+build/
+DerivedData/
+
+# 本地渲染验证产物
+_verify/
+
+# Xcode / macOS
+*.xcuserstate
+xcuserdata/
+.DS_Store
