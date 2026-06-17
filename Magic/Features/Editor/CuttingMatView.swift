@@ -3,16 +3,22 @@ import SwiftUI
 struct CuttingMatView: View {
     let styleID: String
     let themeID: String
+    var stickers: [StickerItem] = []
 
     var body: some View {
         GeometryReader { geo in
             let size = matSize(in: geo.size)
-            Image(uiImage: MatRenderCache.shared.image(
-                styleID: styleID,
-                themeID: themeID,
-                size: CGSize(width: size.width * 2, height: size.height * 2)
-            ))
-            .resizable()
+            ZStack {
+                Image(uiImage: MatRenderCache.shared.image(
+                    styleID: styleID,
+                    themeID: themeID,
+                    size: CGSize(width: size.width * 2, height: size.height * 2)
+                ))
+                .resizable()
+                .frame(width: size.width, height: size.height)
+
+                StickerCanvasView(stickers: stickers, matSize: size)
+            }
             .frame(width: size.width, height: size.height)
             .position(x: geo.size.width / 2, y: geo.size.height / 2)
         }

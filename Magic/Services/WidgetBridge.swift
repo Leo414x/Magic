@@ -13,10 +13,13 @@ enum WidgetBridge {
     #if !WIDGET
     /// App 侧：发布当前 mat 到 Widget 并触发刷新
     static func publish(document: MatDocument) {
-        let image = MatRenderCache.shared.image(
+        let mat = MatRenderCache.shared.image(
             styleID: document.styleID, themeID: document.themeID, size: widgetRenderSize
         )
-        guard let data = image.pngData(), let url = imageURL else { return }
+        let composed = StickerCompositor.composite(
+            matImage: mat, stickers: document.stickers, size: widgetRenderSize
+        )
+        guard let data = composed.pngData(), let url = imageURL else { return }
         try? data.write(to: url)
         WidgetCenter.shared.reloadAllTimelines()
     }

@@ -17,7 +17,9 @@ Phase 1 已完成并对齐 Figma：
 - app 外围背景白色 + 浅色 UI（mat 本身仍是主题色）
 - 近期修复：widget 黑边（图铺满 containerBackground）、编辑器 `+` 调起系统相册（PhotosPicker）、弧线裁到最底部水平线、外框 2.2、R10 标签贴 R10 弧线 2px
 
-待办（Phase 2+）：sticker 主体提取 / 拖拽缩放旋转、撕纸边缘、收藏 Drawer、Wand 自动装饰、CloudKit 协作。选中照片目前暂存 `pickedPhoto` 未落地。
+**Phase 2 进行中**（详见 [CHANGELOG.md](CHANGELOG.md)）：sticker 核心闭环（Vision 抠图 + 拖拽缩放旋转 + 持久化）、Widget 合成 sticker、收藏 Drawer、撕纸边缘（clean/torn/ripped + 颜色/厚度）、Liquid Glass 编辑中间态 —— 轮 1–4 已完成。剩 Onboarding（轮 5）。
+
+待办（Phase 3）：Wand AI 自动装饰、CloudKit 协作。
 
 ## 技术规格
 完整规格（构建顺序、各文件实现、背景风格扩展、Figma 同步流程、验收标准）见 **[TECH_MVP.md](TECH_MVP.md)**。

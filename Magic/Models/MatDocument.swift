@@ -10,6 +10,7 @@ final class MatDocument {
     var themeID: String
     var createdAt: Date
     var updatedAt: Date
+    @Relationship(deleteRule: .cascade) var stickers: [StickerItem] = []
 
     var theme: MatTheme { MatTheme.preset(id: themeID) }
 

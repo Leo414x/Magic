@@ -5,6 +5,7 @@ struct EditorToolbar: View {
     let gridColor: Color
     var onColorTap: () -> Void
     var onAddTap: () -> Void = {}
+    var onStarTap: () -> Void = {}
 
     var body: some View {
         HStack(spacing: 0) {
@@ -21,7 +22,7 @@ struct EditorToolbar: View {
             }.padding(.horizontal, 12)
 
             item { Image(systemName: "wand.and.stars").font(.system(size: 18)).foregroundStyle(.primary) } action: {}
-            item { Image(systemName: "star").font(.system(size: 18)).foregroundStyle(.primary) } action: {}
+            item { Image(systemName: "star").font(.system(size: 18)).foregroundStyle(.primary) } action: { onStarTap() }
         }
         .padding(.vertical, 12).padding(.bottom, 8)
     }

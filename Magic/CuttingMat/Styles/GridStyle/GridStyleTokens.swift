@@ -28,7 +28,7 @@ enum GridStyleTokens {
         static let majorGrid: CGFloat = 0.80   // 明（主）线，按设计明暗分级（Figma dev 读到 0.5，以设计指定 80% 为准）
         static let border: CGFloat = 1.0
         static let tick: CGFloat = 0.72
-        static let numberLabel: CGFloat = 0.85
+        static let numberLabel: CGFloat = 1.0
         static let r10Arc: CGFloat = 0.62
         static let r20Arc: CGFloat = 0.56
         static let r10Label: CGFloat = 0.78
