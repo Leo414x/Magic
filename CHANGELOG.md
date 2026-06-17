@@ -4,6 +4,12 @@
 
 ## Phase 2 — Sticker（进行中）
 
+### 装饰贴纸(WOW/手/墨镜) + 贴纸库 + 阴影
+- 新增装饰贴纸：WOW 3D(Figma 28:587, 9 层矢量+Bungee 字体经 WKWebView 渲染) + 摇滚手 + 像素墨镜(Vision 抠掉背景只留透明主体)
+- 新建「贴纸库」面板 `StickerLibrarySheet`：装饰预设(WOW) + 文字模板(good vibes) + 我的收藏，统一入口(工具栏 star)；`DecorSticker` 预设枚举(加装饰只需加 case + Asset)
+- 贴纸 drop shadow(沿轮廓投影, 不透明度 0.18)：画布 + Widget/缩略图合成一致
+- 签名:`DEVELOPMENT_TEAM` 固定进 project.yml(三 target 自动签名)
+
 ### sticker 选中 / 图层顺序 / 二次编辑
 - 点选 sticker（虚线框高亮，点画布空白取消选中）
 - 选中后底部浮 Liquid Glass 操作条：前移 / 后移图层（zIndex 交换）、删除

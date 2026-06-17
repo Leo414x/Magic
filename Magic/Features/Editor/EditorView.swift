@@ -8,7 +8,7 @@ struct EditorView: View {
     @Environment(\.modelContext) private var context
     @State private var showColorPicker = false
     @State private var showPhotoPicker = false
-    @State private var showDrawer = false
+    @State private var showLibrary = false
     @State private var showStickerEditor = false
     @State private var showTextEditor = false
     @State private var editingImage: UIImage?
@@ -39,7 +39,7 @@ struct EditorView: View {
                     onColorTap: { showColorPicker = true },
                     onTextTap: { editingTextSticker = nil; showTextEditor = true },
                     onAddTap: { showPhotoPicker = true },
-                    onStarTap: { showDrawer = true }
+                    onStarTap: { showLibrary = true }
                 )
             }
         }
@@ -55,8 +55,18 @@ struct EditorView: View {
                 WidgetBridge.publish(document: document)
             }
         }
-        .sheet(isPresented: $showDrawer) {
-            StickerDrawerSheet { saved in addFromSaved(saved) }
+        .sheet(isPresented: $showLibrary) {
+            StickerLibrarySheet(
+                onPickDecor: { addDecor($0) },
+                onPickTextTemplate: { _ in
+                    showLibrary = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        editingTextSticker = nil
+                        showTextEditor = true
+                    }
+                },
+                onPickSaved: { addFromSaved($0) }
+            )
         }
         .sheet(isPresented: $showStickerEditor) {
             if let img = editingImage {
@@ -117,6 +127,18 @@ struct EditorView: View {
         let sticker = StickerItem(imageData: png, zIndex: document.stickers.count,
                                   kind: "text", text: text,
                                   templateId: TextStickerTemplate.goodVibes.rawValue)
+        context.insert(sticker)
+        document.stickers.append(sticker)
+        document.updatedAt = Date()
+        try? context.save()
+        WidgetBridge.publish(document: document)
+    }
+
+    /// 添加预设装饰贴纸（如 WOW）到 mat。
+    private func addDecor(_ decor: DecorSticker) {
+        guard let img = UIImage(named: decor.assetName)?.downscaled(maxDim: 1000),
+              let png = img.pngData() else { return }
+        let sticker = StickerItem(imageData: png, zIndex: document.stickers.count)
         context.insert(sticker)
         document.stickers.append(sticker)
         document.updatedAt = Date()

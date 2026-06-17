@@ -17,7 +17,11 @@ Phase 1 已完成并对齐 Figma：
 - app 外围背景白色 + 浅色 UI（mat 本身仍是主题色）
 - 近期修复：widget 黑边（图铺满 containerBackground）、编辑器 `+` 调起系统相册（PhotosPicker）、弧线裁到最底部水平线、外框 2.2、R10 标签贴 R10 弧线 2px
 
-**Phase 2 进行中**（详见 [CHANGELOG.md](CHANGELOG.md)）：sticker 核心闭环（Vision 抠图 + 拖拽缩放旋转 + 持久化）、Widget 合成 sticker、收藏 Drawer、撕纸边缘（clean/torn/ripped + 颜色/厚度）、Liquid Glass 编辑中间态 —— 轮 1–4 已完成。剩 Onboarding（轮 5）。
+**Phase 2 进行中**（详见 [CHANGELOG.md](CHANGELOG.md)）：sticker 核心闭环（Vision 抠图 + 拖拽/缩放/旋转 + 选中 + 图层前后 + 持久化）、撕纸边缘（clean/torn/ripped + 颜色/厚度）、Liquid Glass 编辑中间态、贴纸 drop shadow、Widget 合成、文字 sticker 二次编辑、**贴纸库**（装饰预设 + 文字模板 + 收藏统一入口，工具栏 star）。剩 Onboarding。
+
+**贴纸扩展方式**：装饰贴纸 = `DecorSticker` 加一个 case + 打包透明 PNG 到 Assets；文字模板 = `TextStickerTemplate` 加 case + 背景图 + 字体。贴纸库 (`StickerLibrarySheet`) 会自动收录。素材若来自 Figma，用 WKWebView 渲染透明背景；若来自不透明图，用 Vision 抠主体（见 `_assets_tmp` 脚本，已 gitignore）。
+
+**工程**：三个 target 已固定 `DEVELOPMENT_TEAM = 495MCUV9BU` 自动签名（写在 project.yml，多设备 generate 后同样生效）。
 
 待办（Phase 3）：Wand AI 自动装饰、CloudKit 协作。
 
