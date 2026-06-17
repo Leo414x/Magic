@@ -4,6 +4,8 @@ struct CuttingMatView: View {
     let styleID: String
     let themeID: String
     var stickers: [StickerItem] = []
+    var selectedStickerID: UUID? = nil
+    var onSelectSticker: (UUID?) -> Void = { _ in }
 
     var body: some View {
         GeometryReader { geo in
@@ -17,7 +19,8 @@ struct CuttingMatView: View {
                 .resizable()
                 .frame(width: size.width, height: size.height)
 
-                StickerCanvasView(stickers: stickers, matSize: size)
+                StickerCanvasView(stickers: stickers, matSize: size,
+                                  selectedID: selectedStickerID, onSelect: onSelectSticker)
             }
             .frame(width: size.width, height: size.height)
             .position(x: geo.size.width / 2, y: geo.size.height / 2)

@@ -13,24 +13,39 @@ struct EditorView: View {
     @State private var showTextEditor = false
     @State private var editingImage: UIImage?
     @State private var pickedPhoto: PhotosPickerItem?
+    @State private var selectedStickerID: UUID?
+    @State private var editingTextSticker: StickerItem?
+
+    private var selectedSticker: StickerItem? {
+        guard let id = selectedStickerID else { return nil }
+        return document.stickers.first { $0.id == id }
+    }
 
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
+                .onTapGesture { selectedStickerID = nil }
             VStack(spacing: 0) {
                 navBar
                 CuttingMatView(styleID: document.styleID,
                                themeID: document.themeID,
-                               stickers: document.stickers)
+                               stickers: document.stickers,
+                               selectedStickerID: selectedStickerID,
+                               onSelectSticker: { selectedStickerID = $0 })
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 EditorToolbar(
                     baseColor: document.theme.baseColor,
                     gridColor: document.theme.gridColor,
                     onColorTap: { showColorPicker = true },
-                    onTextTap: { showTextEditor = true },
+                    onTextTap: { editingTextSticker = nil; showTextEditor = true },
                     onAddTap: { showPhotoPicker = true },
                     onStarTap: { showDrawer = true }
                 )
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if let sel = selectedSticker {
+                stickerActionBar(sel).padding(.bottom, 92)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -52,8 +67,13 @@ struct EditorView: View {
         }
         .sheet(isPresented: $showTextEditor) {
             TextStickerEditorSheet(template: .goodVibes,
-                                   initialText: TextStickerTemplate.goodVibes.defaultText) { text in
-                commitTextSticker(text)
+                                   initialText: editingTextSticker?.text ?? TextStickerTemplate.goodVibes.defaultText) { text in
+                if let editing = editingTextSticker {
+                    updateTextSticker(editing, text: text)
+                    editingTextSticker = nil
+                } else {
+                    commitTextSticker(text)
+                }
             }
         }
         .photosPicker(isPresented: $showPhotoPicker, selection: $pickedPhoto, matching: .images)
@@ -112,6 +132,69 @@ struct EditorView: View {
         document.updatedAt = Date()
         try? context.save()
         WidgetBridge.publish(document: document)
+    }
+
+    // MARK: - 选中 sticker 的操作
+
+    /// 前移 / 后移一层：与相邻 zIndex 的 sticker 交换。
+    private func moveSticker(_ s: StickerItem, forward: Bool) {
+        let sorted = document.stickers.sorted { $0.zIndex < $1.zIndex }
+        guard let i = sorted.firstIndex(where: { $0.id == s.id }) else { return }
+        let j = forward ? i + 1 : i - 1
+        guard sorted.indices.contains(j) else { return }
+        let other = sorted[j]
+        let tmp = s.zIndex; s.zIndex = other.zIndex; other.zIndex = tmp
+        persist()
+    }
+
+    private func deleteSticker(_ s: StickerItem) {
+        if let idx = document.stickers.firstIndex(where: { $0.id == s.id }) {
+            document.stickers.remove(at: idx)
+        }
+        context.delete(s)
+        selectedStickerID = nil
+        persist()
+    }
+
+    /// 文字 sticker 二次编辑：用新文字重渲染并更新 imageData。
+    private func updateTextSticker(_ s: StickerItem, text: String) {
+        let img = TextStickerRenderer.render(template: .goodVibes, text: text).downscaled(maxDim: 1000)
+        guard let png = img.pngData() else { return }
+        s.text = text
+        s.imageData = png
+        persist()
+    }
+
+    private func persist() {
+        document.updatedAt = Date()
+        try? context.save()
+        WidgetBridge.publish(document: document)
+    }
+
+    @ViewBuilder
+    private func stickerActionBar(_ s: StickerItem) -> some View {
+        HStack(spacing: 22) {
+            actionButton("arrow.down.square", "后移") { moveSticker(s, forward: false) }
+            actionButton("arrow.up.square", "前移") { moveSticker(s, forward: true) }
+            if s.isText {
+                actionButton("pencil", "改字") { editingTextSticker = s; showTextEditor = true }
+            }
+            actionButton("trash", "删除", tint: .red) { deleteSticker(s) }
+        }
+        .padding(.horizontal, 22).padding(.vertical, 12)
+        .liquidGlass(cornerRadius: 24)
+    }
+
+    private func actionButton(_ icon: String, _ label: String, tint: Color = .primary,
+                              _ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 3) {
+                Image(systemName: icon).font(.system(size: 17))
+                Text(label).font(.caption2)
+            }
+            .foregroundStyle(tint)
+            .frame(minWidth: 40)
+        }
     }
 
     private var navBar: some View {

@@ -4,6 +4,20 @@
 
 ## Phase 2 — Sticker（进行中）
 
+### sticker 选中 / 图层顺序 / 二次编辑
+- 点选 sticker（虚线框高亮，点画布空白取消选中）
+- 选中后底部浮 Liquid Glass 操作条：前移 / 后移图层（zIndex 交换）、删除
+- 文字 sticker 二次编辑：选中 → 改字 → 重渲染并更新（复用文字编辑面板）
+
+### good vibes 文字 sticker
+- Figma 5 层透明 SVG → WKWebView 渲染透明背景，打包 Oleo Script 字体
+- `TextStickerRenderer` 合成「背景 + 可编辑文字」；工具栏 Aa → Liquid Glass 文字面板（实时预览）→ 落地
+- `StickerItem` 加 `kind/text/templateId`；文字 sticker 走 imageData，与照片纸边 sticker 区分
+
+### 修复
+- 首页缩略图合成 sticker 且随编辑刷新
+- Sticker 编辑中间态点击闪屏（预览改 @State，避免每帧跑滤镜）
+
 ### 轮 4b · Sticker 编辑中间态（Liquid Glass）
 - `StickerEditorSheet`：选图抠图后从下方升起的中间态面板——实时预览 + 切 `none/clean/torn/ripped` + 选边缘颜色 + 调厚度，确认后才落地（取消则丢弃）
 - `liquidGlass` 适配：iOS 26 用 `.glassEffect(.regular,…)`，旧系统降级 `.regularMaterial`
