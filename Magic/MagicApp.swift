@@ -7,6 +7,6 @@ struct MagicApp: App {
         WindowGroup {
             HomeView()
         }
-        .modelContainer(for: [MatDocument.self, SavedSticker.self])
+        .modelContainer(for: [MatDocument.self, SavedSticker.self, PosterDocument.self])
     }
 }

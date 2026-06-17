@@ -23,6 +23,8 @@ Phase 1 已完成并对齐 Figma：
 
 **工程**：三个 target 已固定 `DEVELOPMENT_TEAM = 495MCUV9BU` 自动签名（写在 project.yml，多设备 generate 后同样生效）。
 
+**独立「海报」功能**：杂志海报模板(MAGAZINE SKATEBOARD)——Home 海报入口 → 上传照片 → Vision 抠人像 → 右下椭圆槽彩色填充。与 cutting mat 分开(`PosterDocument`/`PosterEditorView`)。
+
 待办（Phase 3）：Wand AI 自动装饰、CloudKit 协作。
 
 ## 技术规格

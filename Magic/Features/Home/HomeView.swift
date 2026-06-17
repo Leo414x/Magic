@@ -5,6 +5,7 @@ struct HomeView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \MatDocument.updatedAt, order: .reverse) private var mats: [MatDocument]
     @State private var path: [MatDocument] = []
+    @State private var showPoster = false
 
     private let columns = [GridItem(.adaptive(minimum: 160), spacing: 16)]
 
@@ -31,6 +32,11 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button { showPoster = true } label: {
+                        Image(systemName: "doc.richtext")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { createAndOpen() } label: {
                         Image(systemName: "plus")
                     }
@@ -41,6 +47,9 @@ struct HomeView: View {
             }
         }
         .preferredColorScheme(.light)
+        .fullScreenCover(isPresented: $showPoster) {
+            PosterEditorView()
+        }
     }
 
     private var emptyState: some View {

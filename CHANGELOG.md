@@ -2,6 +2,12 @@
 
 本项目从零搭建到现在的逐轮进展记录（倒序，最新在上）。完整技术规格见 [TECH_MVP.md](TECH_MVP.md)，项目说明见 [CLAUDE.md](CLAUDE.md)。
 
+## 杂志海报（独立功能）
+- 新增独立「海报」功能：MAGAZINE SKATEBOARD 模板(Figma 27:242)，Bowlby One SC 字体经 WKWebView 渲染海报背景
+- `PosterDocument` + `PosterEditorView`；Home 加海报入口(doc.richtext)，fullScreenCover 呈现
+- 人像：上传照片 → Vision 抠主体 → 右下椭圆槽填充(彩色, scaledToFill + Ellipse 裁剪)，支持**缩放(pinch) + 椭圆内拖动(drag)** 调整，持久化
+- 占位提示(虚线椭圆 + 文案)由 app 在**无人像时**显示，背景图本身不含(填入人像后自动消失)
+
 ## Phase 2 — Sticker（进行中）
 
 ### 装饰贴纸(WOW/手/墨镜) + 贴纸库 + 阴影
